@@ -1,0 +1,12 @@
+[package]
+name = "utilities"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+num-traits = {workspace = true}
+thiserror = {workspace = true}
+
+[dev-dependencies]
+rstest = {workspace = true}
+proptest = {workspace = true}
