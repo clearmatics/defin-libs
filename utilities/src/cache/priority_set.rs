@@ -131,16 +131,12 @@ impl<D: Ord + Clone + Hash, P: Ord + Copy> PrioritySet<D, P> {
     pub fn reconcile(&mut self, keep: &[D], default: P) {
         let mut retained: HashSet<_> = keep.iter().collect();
 
-        let to_remove = self
-            .indices
-            .keys()
-            .filter(|key| !retained.remove(*key))
-            .cloned()
-            .collect::<Vec<_>>();
+        let to_remove =
+            self.indices.keys().filter(|key| !retained.remove(*key)).cloned().collect::<Vec<_>>();
 
         for item in to_remove {
             let p = self.indices.remove(&item).unwrap();
-            let e = Entry{data: item, priority: p};
+            let e = Entry { data: item, priority: p };
             self.entries.remove(&e);
         }
 
@@ -149,7 +145,6 @@ impl<D: Ord + Clone + Hash, P: Ord + Copy> PrioritySet<D, P> {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -251,11 +246,7 @@ mod tests {
 
         let entries: Vec<_> = ps.iter().collect();
         assert_eq!(entries.len(), 2);
-        assert!(entries
-            .iter()
-            .any(|e| *e.0 == k1 && *e.1 == 100));
-        assert!(entries
-            .iter()
-            .any(|e| *e.0 == k3 && *e.1 == 20));
+        assert!(entries.iter().any(|e| *e.0 == k1 && *e.1 == 100));
+        assert!(entries.iter().any(|e| *e.0 == k3 && *e.1 == 20));
     }
 }

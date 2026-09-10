@@ -1,3 +1,3 @@
 //! Utilities for working with different kind of caches.
 
-mod priority_set;
+pub mod priority_set;
