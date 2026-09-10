@@ -25,8 +25,8 @@
 //! assert_eq!(N5F1::quorum(n).unwrap(), 17);
 //!```
 
-use thiserror::Error;
 use num_traits::ToPrimitive;
+use thiserror::Error;
 
 /// Errors of invalid parameter
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -37,7 +37,7 @@ pub enum BFTError {
 
     /// Two small value of n.
     #[error("n must be at least {min}, got {got}")]
-    TooSmall{min: u64, got: u64},
+    TooSmall { min: u64, got: u64 },
 }
 
 /// An abstraction of BFT model that computes quorum(Q) and F.
@@ -59,18 +59,18 @@ impl BFT for N3F1 {
     fn quorum(n: impl ToPrimitive) -> Result<u64, BFTError> {
         let n = n.to_u64().ok_or(BFTError::WrongType)?;
         if n < 4 {
-            return Err(BFTError::TooSmall {min: 4, got: n})
+            return Err(BFTError::TooSmall { min: 4, got: n });
         }
-        Ok(n - (n-1)/3)
+        Ok(n - (n - 1) / 3)
     }
 
     #[inline]
     fn max_faults(n: impl ToPrimitive) -> Result<u64, BFTError> {
         let n = n.to_u64().ok_or(BFTError::WrongType)?;
         if n < 4 {
-            return Err(BFTError::TooSmall {min: 4, got: n})
+            return Err(BFTError::TooSmall { min: 4, got: n });
         }
-        Ok((n-1) / 3)
+        Ok((n - 1) / 3)
     }
 }
 
@@ -81,52 +81,53 @@ impl BFT for N5F1 {
     fn quorum(n: impl ToPrimitive) -> Result<u64, BFTError> {
         let n = n.to_u64().ok_or(BFTError::WrongType)?;
         if n < 6 {
-            return Err(BFTError::TooSmall {min: 6, got: n})
+            return Err(BFTError::TooSmall { min: 6, got: n });
         }
-        Ok(n - ((n-1)/5))
+        Ok(n - ((n - 1) / 5))
     }
     #[inline]
     fn max_faults(n: impl ToPrimitive) -> Result<u64, BFTError> {
         let n = n.to_u64().ok_or(BFTError::WrongType)?;
         if n < 6 {
-            return Err(BFTError::TooSmall {min: 6, got: n})
+            return Err(BFTError::TooSmall { min: 6, got: n });
         }
-        Ok((n-1) / 5)
+        Ok((n - 1) / 5)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rstest::rstest;
     use proptest::prelude::*;
+    use rstest::rstest;
+    use std::f32::consts::PI;
 
     #[test]
     fn test_wrong_type() {
         assert_eq!(N3F1::quorum(-1), Err(BFTError::WrongType));
-        assert_eq!(N3F1::quorum(-3.14), Err(BFTError::WrongType));
+        assert_eq!(N3F1::quorum(-PI), Err(BFTError::WrongType));
         assert_eq!(N3F1::max_faults(-1), Err(BFTError::WrongType));
-        assert_eq!(N3F1::max_faults(-3.14), Err(BFTError::WrongType));
+        assert_eq!(N3F1::max_faults(-PI), Err(BFTError::WrongType));
 
         assert_eq!(N5F1::quorum(-1), Err(BFTError::WrongType));
-        assert_eq!(N5F1::quorum(-3.14), Err(BFTError::WrongType));
+        assert_eq!(N5F1::quorum(-PI), Err(BFTError::WrongType));
         assert_eq!(N5F1::max_faults(-1), Err(BFTError::WrongType));
-        assert_eq!(N5F1::max_faults(-3.14), Err(BFTError::WrongType));
+        assert_eq!(N5F1::max_faults(-PI), Err(BFTError::WrongType));
     }
 
     #[test]
     fn test_two_small() {
-        assert_eq!(N3F1::quorum(0), Err(BFTError::TooSmall {min: 4, got: 0}));
-        assert_eq!(N3F1::quorum(1), Err(BFTError::TooSmall {min: 4, got: 1}));
-        assert_eq!(N3F1::quorum(2), Err(BFTError::TooSmall {min: 4, got: 2}));
-        assert_eq!(N3F1::quorum(3), Err(BFTError::TooSmall {min: 4, got: 3}));
+        assert_eq!(N3F1::quorum(0), Err(BFTError::TooSmall { min: 4, got: 0 }));
+        assert_eq!(N3F1::quorum(1), Err(BFTError::TooSmall { min: 4, got: 1 }));
+        assert_eq!(N3F1::quorum(2), Err(BFTError::TooSmall { min: 4, got: 2 }));
+        assert_eq!(N3F1::quorum(3), Err(BFTError::TooSmall { min: 4, got: 3 }));
 
-        assert_eq!(N5F1::quorum(0), Err(BFTError::TooSmall {min: 6, got: 0}));
-        assert_eq!(N5F1::quorum(1), Err(BFTError::TooSmall {min: 6, got: 1}));
-        assert_eq!(N5F1::quorum(2), Err(BFTError::TooSmall {min: 6, got: 2}));
-        assert_eq!(N5F1::quorum(3), Err(BFTError::TooSmall {min: 6, got: 3}));
-        assert_eq!(N5F1::quorum(4), Err(BFTError::TooSmall {min: 6, got: 4}));
-        assert_eq!(N5F1::quorum(5), Err(BFTError::TooSmall {min: 6, got: 5}));
+        assert_eq!(N5F1::quorum(0), Err(BFTError::TooSmall { min: 6, got: 0 }));
+        assert_eq!(N5F1::quorum(1), Err(BFTError::TooSmall { min: 6, got: 1 }));
+        assert_eq!(N5F1::quorum(2), Err(BFTError::TooSmall { min: 6, got: 2 }));
+        assert_eq!(N5F1::quorum(3), Err(BFTError::TooSmall { min: 6, got: 3 }));
+        assert_eq!(N5F1::quorum(4), Err(BFTError::TooSmall { min: 6, got: 4 }));
+        assert_eq!(N5F1::quorum(5), Err(BFTError::TooSmall { min: 6, got: 5 }));
     }
 
     #[rstest]
@@ -149,16 +150,11 @@ mod tests {
     #[case(19, 6, 13)]
     #[case(20, 6, 14)]
     #[case(21, 6, 15)]
-    fn test_bft_n3f1(
-        #[case] n: u64,
-        #[case] expected_f: u64,
-        #[case] expected_q: u64,
-    ) {
+    fn test_bft_n3f1(#[case] n: u64, #[case] expected_f: u64, #[case] expected_q: u64) {
         assert_eq!(N3F1::max_faults(n).unwrap(), expected_f);
         assert_eq!(N3F1::quorum(n).unwrap(), expected_q);
         assert_eq!(n, expected_f + expected_q);
     }
-
 
     #[rstest]
     // case(N, F, Quorum)
@@ -178,11 +174,7 @@ mod tests {
     #[case(19, 3, 16)]
     #[case(20, 3, 17)]
     #[case(21, 4, 17)]
-    fn test_bft_n5f1(
-        #[case] n: u64,
-        #[case] expected_f: u64,
-        #[case] expected_quorum: u64,
-    ) {
+    fn test_bft_n5f1(#[case] n: u64, #[case] expected_f: u64, #[case] expected_quorum: u64) {
         assert_eq!(N5F1::max_faults(n).unwrap(), expected_f);
         assert_eq!(N5F1::quorum(n).unwrap(), expected_quorum);
         assert_eq!(n, expected_f + expected_quorum);
@@ -213,7 +205,6 @@ mod tests {
     /// between two quorum of participants.
     #[test]
     fn test_bft_model_safety_property() -> Result<(), TestCaseError> {
-
         for n in 6u64..5_000 {
             // N3F1 safety
             let f_3f1 = N3F1::max_faults(n).unwrap();
@@ -221,7 +212,10 @@ mod tests {
             prop_assert!(
                 2 * q_3f1 > n + f_3f1,
                 "N3f1 safety property violated for n={}: 2*{} <= {} + {}",
-                n, q_3f1, n, f_3f1
+                n,
+                q_3f1,
+                n,
+                f_3f1
             );
 
             // N5F1 safety
@@ -230,7 +224,10 @@ mod tests {
             prop_assert!(
                 2 * q_5f1 > n + f_5f1,
                 "N5f1 safety property violated for n={}: 2*{} <= {} + {}",
-                n, q_5f1, n, f_5f1
+                n,
+                q_5f1,
+                n,
+                f_5f1
             );
         }
         Ok(())
