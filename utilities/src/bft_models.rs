@@ -9,9 +9,22 @@
 //! where `n` denotes the total weight of participants.
 //! where `f` denotes the max weight of faulty participants.
 //!
+//! # Example
 //!
+//! ```
+//! use utilities::bft_models::{BFTError, BFT, N3F1, N5F1};
+//!
+//! // n = 3*f + 1
+//! let n = 21;
+//! assert_eq!(N3F1::max_faults(n).unwrap(), 6);
+//! assert_eq!(N3F1::quorum(n).unwrap(), 15);
+//!
+//! // n = 5*f + 1
+//! let n = 21;
+//! assert_eq!(N5F1::max_faults(n).unwrap(), 4);
+//! assert_eq!(N5F1::quorum(n).unwrap(), 17);
+//!```
 
-// todo: beauty up the document in this file.
 use thiserror::Error;
 use num_traits::ToPrimitive;
 
@@ -28,12 +41,17 @@ pub enum BFTError {
 }
 
 /// An abstraction of BFT model that computes quorum(Q) and F.
+/// All the parameters are bounded by trait ToPrimitives, thus that
+/// callers can use i16, i32, i64, u32, u64, usize, etc. There isn't
+/// any explicit type conversion. The output is Result<u64, BFTError>.
 pub trait BFT {
+    /// Compute the quorum weight of participants in a BFT model.
     fn quorum(n: impl ToPrimitive) -> Result<u64, BFTError>;
+    /// Compute the maximum weight of faulty participants in a BFT model.
     fn max_faults(n: impl ToPrimitive) -> Result<u64, BFTError>;
 }
 
-/// BFT model `n = 3*f + 1`
+/// BFT model with `n = 3*f + 1` as the participant setup.
 pub struct N3F1;
 
 impl BFT for N3F1 {
@@ -56,7 +74,7 @@ impl BFT for N3F1 {
     }
 }
 
-/// BFT model `n = 5*f + 1`
+/// BFT model with `n = 5*f + 1` as the participant setup.
 pub struct N5F1;
 impl BFT for N5F1 {
     #[inline]
