@@ -83,7 +83,7 @@ impl<D: Ord + Clone + Hash, P: Ord + Copy> PrioritySet<D, P> {
 
     /// Check if it contains an entry.
     pub fn has(&self, data: &D) -> bool {
-        self.indices.contains_key(&data)
+        self.indices.contains_key(data)
     }
 
     /// Get the entry with the highest priority.
@@ -149,7 +149,6 @@ impl<D: Ord + Clone + Hash, P: Ord + Copy> PrioritySet<D, P> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::time::Duration;
 
     #[test]
     fn test_insert_delete_and_iteration() {
