@@ -2,4 +2,4 @@
 
 pub mod priority_set;
 pub mod tls;
-mod linear_collections;
+pub mod linear_collections;
