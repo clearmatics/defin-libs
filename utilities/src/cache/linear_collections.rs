@@ -1,7 +1,7 @@
 //! A few linear collections built on top of vector.
 
-use std::collections::VecDeque;
 use core::num::NonZeroUsize;
+use std::collections::VecDeque;
 use std::ops::Deref;
 
 /// A [`CappedQueue`] with fix capacity.
@@ -16,10 +16,7 @@ pub struct CappedQueue<T> {
 impl<T> CappedQueue<T> {
     /// Create an CappedQueue with the given capacity.
     pub fn new(capacity: NonZeroUsize) -> Self {
-        Self {
-            deque: VecDeque::with_capacity(capacity.get()),
-            capacity,
-        }
+        Self { deque: VecDeque::with_capacity(capacity.get()), capacity }
     }
 
     /// Return the capacity.
@@ -29,11 +26,8 @@ impl<T> CappedQueue<T> {
 
     /// Append an item, remove and return the oldest item if it's full.
     pub fn append(&mut self, i: T) -> Option<T> {
-        let to_remove = if self.deque.len() == self.capacity.get() {
-            self.deque.pop_front()
-        } else {
-            None
-        };
+        let to_remove =
+            if self.deque.len() == self.capacity.get() { self.deque.pop_front() } else { None };
 
         self.deque.push_back(i);
         to_remove
@@ -107,9 +101,6 @@ mod tests {
         deque.append(1);
         deque.append(2);
 
-        assert_eq!(
-            deque.into_queue().into_iter().collect::<Vec<_>>(),
-            vec![1, 2]
-        );
+        assert_eq!(deque.into_queue().into_iter().collect::<Vec<_>>(), vec![1, 2]);
     }
 }
