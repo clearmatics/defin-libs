@@ -100,11 +100,7 @@ pub fn elect<Id: Clone>(
     // Descending: largest key (closest to 0) wins.
     keyed.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap_or(Ordering::Equal));
 
-    keyed
-        .into_iter()
-        .take(committee_size)
-        .map(|(_, id)| id.clone())
-        .collect()
+    keyed.into_iter().take(committee_size).map(|(_, id)| id.clone()).collect()
 }
 
 #[cfg(test)]
@@ -123,11 +119,7 @@ mod tests {
     }
 
     fn participants(powers: &[u64]) -> Vec<Participant<usize>> {
-        powers
-            .iter()
-            .enumerate()
-            .map(|(i, &w)| Participant::new(i, w))
-            .collect()
+        powers.iter().enumerate().map(|(i, &w)| Participant::new(i, w)).collect()
     }
 
     // ---------- Determinism / basic correctness ----------
@@ -301,16 +293,10 @@ mod tests {
 
         // Monotonicity: counts should be non-decreasing with power.
         for i in 1..counts.len() {
-            assert!(
-                counts[i] >= counts[i - 1],
-                "counts = {counts:?} is not monotonic"
-            );
+            assert!(counts[i] >= counts[i - 1], "counts = {counts:?} is not monotonic");
         }
         // And meaningfully different between extremes.
-        assert!(
-            counts[4] > counts[0] * 2,
-            "top vs bottom ratio too small: {counts:?}"
-        );
+        assert!(counts[4] > counts[0] * 2, "top vs bottom ratio too small: {counts:?}");
     }
 
     /// A zero-power whale must still be excluded even if all others are tiny.
