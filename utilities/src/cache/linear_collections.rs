@@ -1,8 +1,6 @@
 //! A few linear collections built on top of vector.
 
-use crate::NZUsize;
 use core::num::NonZeroUsize;
-use std::arch::x86_64::_mm256_blend_epi32;
 use std::collections::VecDeque;
 use std::ops::{Deref, DerefMut};
 use thiserror::Error;
@@ -64,47 +62,6 @@ impl<T> AsRef<VecDeque<T>> for CappedQueue<T> {
 impl<T> From<CappedQueue<T>> for VecDeque<T> {
     fn from(deque: CappedQueue<T>) -> Self {
         deque.deque
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use core::num::NonZeroUsize;
-
-    #[test]
-    fn test_capped_evicts_oldest() {
-        let mut deque = CappedQueue::new(NonZeroUsize::new(3).unwrap());
-
-        assert_eq!(deque.append(1), None);
-        assert_eq!(deque.append(2), None);
-        assert_eq!(deque.append(3), None);
-        assert_eq!(deque.append(4), Some(1));
-
-        assert_eq!(deque.capacity().get(), 3);
-        assert_eq!(deque.iter().copied().collect::<Vec<_>>(), vec![2, 3, 4]);
-    }
-
-    #[test]
-    fn test_capped_pop_front_reuses_capacity() {
-        let mut deque = CappedQueue::new(NonZeroUsize::new(2).unwrap());
-
-        assert_eq!(deque.append(1), None);
-        assert_eq!(deque.append(2), None);
-        assert_eq!(deque.pop_front(), Some(1));
-        assert_eq!(deque.append(3), None);
-
-        assert_eq!(deque.iter().copied().collect::<Vec<_>>(), vec![2, 3]);
-    }
-
-    #[test]
-    fn test_capped_into_inner() {
-        let mut deque = CappedQueue::new(NonZeroUsize::new(2).unwrap());
-
-        deque.append(1);
-        deque.append(2);
-
-        assert_eq!(deque.into_queue().into_iter().collect::<Vec<_>>(), vec![1, 2]);
     }
 }
 
@@ -365,8 +322,46 @@ macro_rules! none_empty_queue {
     };
 }
 
-mod test {
+#[cfg(test)]
+mod tests {
     use super::*;
+    use crate::NZUsize;
+    use core::num::NonZeroUsize;
+
+    #[test]
+    fn test_capped_evicts_oldest() {
+        let mut deque = CappedQueue::new(NonZeroUsize::new(3).unwrap());
+
+        assert_eq!(deque.append(1), None);
+        assert_eq!(deque.append(2), None);
+        assert_eq!(deque.append(3), None);
+        assert_eq!(deque.append(4), Some(1));
+
+        assert_eq!(deque.capacity().get(), 3);
+        assert_eq!(deque.iter().copied().collect::<Vec<_>>(), vec![2, 3, 4]);
+    }
+
+    #[test]
+    fn test_capped_pop_front_reuses_capacity() {
+        let mut deque = CappedQueue::new(NonZeroUsize::new(2).unwrap());
+
+        assert_eq!(deque.append(1), None);
+        assert_eq!(deque.append(2), None);
+        assert_eq!(deque.pop_front(), Some(1));
+        assert_eq!(deque.append(3), None);
+
+        assert_eq!(deque.iter().copied().collect::<Vec<_>>(), vec![2, 3]);
+    }
+
+    #[test]
+    fn test_capped_into_inner() {
+        let mut deque = CappedQueue::new(NonZeroUsize::new(2).unwrap());
+
+        deque.append(1);
+        deque.append(2);
+
+        assert_eq!(deque.into_queue().into_iter().collect::<Vec<_>>(), vec![1, 2]);
+    }
 
     #[test]
     fn test_new() {
