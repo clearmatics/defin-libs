@@ -302,8 +302,8 @@ macro_rules! none_empty_queue {
         NoneEmptyQue::from_unchecked($vec)
     }};
 
-    ($elem:expr; NZUsize!($n:expr)) => {{
-        NoneEmptyQue::from_unchecked(vec![$elem; NZUsize!($n).get()])
+    ($elem:expr; nz_usize!($n:expr)) => {{
+        NoneEmptyQue::from_unchecked(vec![$elem; nz_usize!($n).get()])
     }};
 
     ($elem:expr; @$n:expr) => {{
@@ -325,7 +325,7 @@ macro_rules! none_empty_queue {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::NZUsize;
+    use crate::nz_usize;
     use core::num::NonZeroUsize;
 
     #[test]
@@ -414,7 +414,7 @@ mod tests {
         assert_eq!(v.first(), &0);
 
         // NZUsize! macro form
-        let v = none_empty_queue![99; NZUsize!(3)];
+        let v = none_empty_queue![99; nz_usize!(3)];
         assert_eq!(v.len().get(), 3);
         assert!(v.iter().all(|&x| x == 99));
 

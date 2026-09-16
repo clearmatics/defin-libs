@@ -8,7 +8,7 @@ pub mod tls;
 /// For literal values, validation occurs at compile time. For expressions, validation
 /// occurs at runtime.
 #[macro_export]
-macro_rules! NZUsize {
+macro_rules! nz_usize {
     ($val:literal) => {
         const { ::core::num::NonZeroUsize::new($val).expect("value must be non-zero") }
     };
@@ -22,7 +22,7 @@ macro_rules! NZUsize {
 /// For literal values, validation occurs at compile time. For expressions, validation
 /// occurs at runtime.
 #[macro_export]
-macro_rules! NZU8 {
+macro_rules! nz_u8 {
     ($val:literal) => {
         const { ::core::num::NonZeroU8::new($val).expect("value must be non-zero") }
     };
@@ -36,7 +36,7 @@ macro_rules! NZU8 {
 /// For literal values, validation occurs at compile time. For expressions, validation
 /// occurs at runtime.
 #[macro_export]
-macro_rules! NZU16 {
+macro_rules! nz_u16 {
     ($val:literal) => {
         const { ::core::num::NonZeroU16::new($val).expect("value must be non-zero") }
     };
@@ -50,7 +50,7 @@ macro_rules! NZU16 {
 /// For literal values, validation occurs at compile time. For expressions, validation
 /// occurs at runtime.
 #[macro_export]
-macro_rules! NZU32 {
+macro_rules! nz_u32 {
     ($val:literal) => {
         const { ::core::num::NonZeroU32::new($val).expect("value must be non-zero") }
     };
@@ -64,7 +64,7 @@ macro_rules! NZU32 {
 /// For literal values, validation occurs at compile time. For expressions, validation
 /// occurs at runtime.
 #[macro_export]
-macro_rules! NZU64 {
+macro_rules! nz_u64 {
     ($val:literal) => {
         const { ::core::num::NonZeroU64::new($val).expect("value must be non-zero") }
     };
